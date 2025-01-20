@@ -3,3 +3,4 @@ bootsect
 setup
 linux.img
 tools/build
+kernel/system
