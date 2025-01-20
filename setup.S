@@ -83,8 +83,23 @@ is_disk1:
   /* prepare for protection mode */
   cli
 
+  call empty_8042
+  movb $0xD1, %al
+  outb %al,  $0x64
+  call empty_8042
+  movb $0xDF, %al
+  outb %al,  $0x60
+  call empty_8042
+
 loop:
   jmp loop
+
+empty_8042:
+  .word 0x00eb, 0x00eb
+  inb $0x64, %al
+  testb $2, %al
+  jnz empty_8042
+  ret
 
 msg:
   .ascii "setup is running"
