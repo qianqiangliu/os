@@ -1,0 +1,5 @@
+*.o
+bootsect
+setup
+linux.img
+tools/build
