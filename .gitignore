@@ -1,4 +1,5 @@
 *.o
+*.a
 bootsect
 setup
 linux.img

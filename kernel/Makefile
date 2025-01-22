@@ -6,7 +6,7 @@ LD := $(COMPILE_PREFIX)ld -m elf_i386
 CCFLAG := -march=i386 -I../include -nostdinc -Wall -fomit-frame-pointer
 LDFLAG := -Ttext 0x0 -s --oformat binary
 
-OBJS := head.o main.o sched.o
+OBJS := head.o main.o sched.o chr_drv/chr_drv.a
 
 system: $(OBJS)
 	$(LD) $(LDFLAG) -e startup_32 -o $@ $^
@@ -20,5 +20,9 @@ main.o: main.c
 sched.o: sched.c
 	$(GCC) $(CCFLAG) -c -o $@ $<
 
+chr_drv/chr_drv.a: chr_drv/*.c
+	cd chr_drv; make chr_drv.a; cd ..
+
 clean:
 	rm -f head.o main.o sched.o system
+	cd chr_drv; make clean; cd ..
