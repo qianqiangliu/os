@@ -28,7 +28,7 @@ setup.o : setup.S
 kernel/system:
 	cd kernel; make system; cd ..
 
-run:
+run: linux.img
 	qemu-system-i386 -boot a -fda linux.img
 
 clean:
