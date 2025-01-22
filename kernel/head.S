@@ -1,7 +1,8 @@
 .code32
 .text
-.global startup_32
+.global startup_32, idt, gdt, pg_dir, tmp_floppy_area
 
+pg_dir:
 startup_32:
   movl $0x10, %eax
   movw %ax, %ds
@@ -21,11 +22,14 @@ startup_32:
   movl $0x18, %eax
   movw %ax, %gs
 
-  int $0x80
-  sti
+  xorl %eax, %eax
+1:
+  incl %eax
+  movl %eax, 0x000000
+  cmpl %eax, 0x100000
+  je 1b
 
-loop:
-  jmp loop
+  jmp after_page_tables
 
 setup_idt:
   leal ignore_int, %edx
@@ -46,6 +50,34 @@ rp_sidt:
 setup_gdt:
   lgdt gdt_descr
   ret
+
+.org 0x1000
+pg0:
+
+.org 0x2000
+pg1:
+
+.org 0x3000
+pg2:
+
+.org 0x4000
+pg3:
+
+.org 0x5000
+
+tmp_floppy_area:
+  .fill 1024, 1, 0
+
+after_page_tables:
+  pushl $0
+  pushl $0
+  pushl $0
+  pushl $L6
+  pushl $main
+  jmp setup_paging
+
+L6:
+  jmp L6
 
 ignore_int:
   pushl %eax
@@ -87,6 +119,33 @@ clock_handle:
   movb $0x20, %al
   outb %al, $0x20
   iret
+
+.align 4
+setup_paging:
+  movl $1024 * 5, %ecx
+  xorl %eax, %eax
+  xorl %edi, %edi
+  cld
+  rep
+  stosl
+
+  movl $pg0 + 7, pg_dir
+  movl $pg1 + 7, pg_dir + 4
+  movl $pg2 + 7, pg_dir + 8
+  movl $pg3 + 7, pg_dir + 12
+  movl $pg3 + 4092, %edi
+  movl $0xfff007, %eax
+  std
+1:
+  stosl
+  subl $0x1000, %eax
+  jge 1b
+  xorl %eax, %eax
+  movl %eax, %cr3
+  movl %cr0, %eax
+  orl $0x80000000, %eax
+  movl %eax, %cr0
+  ret
 
 .align 4
 .word 0

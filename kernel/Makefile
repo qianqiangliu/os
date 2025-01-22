@@ -3,10 +3,10 @@ COMPILE_PREFIX ?= i386-jos-elf-
 GCC := $(COMPILE_PREFIX)gcc -m32
 LD := $(COMPILE_PREFIX)ld -m elf_i386
 
-CCFLAG := -mcpu=i386 -I../include -nostdinc -Wall -fomit-frame-pointer -c
+CCFLAG := -march=i386 -I../include -nostdinc -Wall -fomit-frame-pointer
 LDFLAG := -Ttext 0x0 -s --oformat binary
 
-OBJS := head.o
+OBJS := head.o main.o
 
 system: $(OBJS)
 	$(LD) $(LDFLAG) -e startup_32 -o $@ $^
@@ -14,5 +14,8 @@ system: $(OBJS)
 head.o: head.S
 	$(GCC) -traditional -c -o $@ $<
 
+main.o: main.c
+	$(GCC) $(CCFLAG) -c -o $@ $<
+
 clean:
-	rm -f head.o system
+	rm -f head.o main.o system
