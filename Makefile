@@ -1,7 +1,7 @@
-CROSS_COMPILE ?= i386-jos-elf-
+COMPILE_PREFIX ?= i386-jos-elf-
 
-AS := $(CROSS_COMPILE)as --32
-LD := $(CROSS_COMPILE)ld -m elf_i386
+AS := $(COMPILE_PREFIX)as --32
+LD := $(COMPILE_PREFIX)ld -m elf_i386
 
 LDFLAG := -Ttext 0x0 -s --oformat binary
 

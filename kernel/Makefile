@@ -1,7 +1,7 @@
-CROSS_COMPILE ?= i386-jos-elf-
+COMPILE_PREFIX ?= i386-jos-elf-
 
-GCC := $(CROSS_COMPILE)gcc -m32
-LD := $(CROSS_COMPILE)ld -m elf_i386
+GCC := $(COMPILE_PREFIX)gcc -m32
+LD := $(COMPILE_PREFIX)ld -m elf_i386
 
 CCFLAG := -mcpu=i386 -I../include -nostdinc -Wall -fomit-frame-pointer -c
 LDFLAG := -Ttext 0x0 -s --oformat binary
