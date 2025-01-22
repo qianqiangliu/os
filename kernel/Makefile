@@ -3,7 +3,7 @@ COMPILE_PREFIX ?= i386-jos-elf-
 GCC := $(COMPILE_PREFIX)gcc -m32
 LD := $(COMPILE_PREFIX)ld -m elf_i386
 
-CCFLAG := -march=i386 -I../include -nostdinc -Wall -fomit-frame-pointer
+CCFLAG := -I../include -nostdinc -fno-pic -Wall -fomit-frame-pointer
 LDFLAG := -Ttext 0x0 -s --oformat binary
 
 OBJS := head.o main.o sched.o chr_drv/chr_drv.a
